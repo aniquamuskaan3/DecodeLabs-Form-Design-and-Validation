@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>✨ Multi-Step Form Design and Validation </title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins',sans-serif;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(
+        -45deg,
+        #6a11cb,
+        #2575fc,
+        #ff6a88,
+        #ff99ac
+    );
+    background-size:400% 400%;
+    animation:bg 15s ease infinite;
+    padding:30px;
+    overflow-x:hidden;
+    position:relative;
+}
+
+@keyframes bg{
+    0%{background-position:0% 50%;}
+    50%{background-position:100% 50%;}
+    100%{background-position:0% 50%;}
+}
+
+/* Floating Blobs */
+
+.blob{
+    position:absolute;
+    border-radius:50%;
+    background:rgba(255,255,255,.15);
+    backdrop-filter:blur(20px);
+    animation:float 8s infinite ease-in-out;
+}
+
+.blob1{
+    width:280px;
+    height:280px;
+    top:-90px;
+    left:-90px;
+}
+
+.blob2{
+    width:220px;
+    height:220px;
+    right:-70px;
+    bottom:-70px;
+}
+
+.blob3{
+    width:120px;
+    height:120px;
+    left:8%;
+    bottom:15%;
+}
+
+@keyframes float{
+    50%{
+        transform:translateY(-30px);
+    }
+}
+
+.container{
+    width:100%;
+    max-width:550px;
+    padding:35px;
+    border-radius:30px;
+    background:rgba(255,255,255,.15);
+    backdrop-filter:blur(25px);
+    border:1px solid rgba(255,255,255,.2);
+    box-shadow:0 20px 50px rgba(0,0,0,.2);
+    color:white;
+}
+
+h1{
+    text-align:center;
+    margin-bottom:10px;
+}
+
+.subtitle{
+    text-align:center;
+    margin-bottom:30px;
+    opacity:.9;
+}
+
+/* Dark Button */
+
+#themeBtn{
+    position:absolute;
+    top:20px;
+    right:20px;
+    width:50px;
+    height:50px;
+    border:none;
+    border-radius:50%;
+    background:rgba(255,255,255,.2);
+    color:black;
+    font-size:20px;
+    cursor:pointer;
+}
+
+/* Progress */
+
+.progress{
+    width:100%;
+    height:10px;
+    background:rgba(255,255,255,.2);
+    border-radius:30px;
+    overflow:hidden;
+    margin-bottom:30px;
+}
+
+.progress-bar{
+    width:33%;
+    height:100%;
+    background:#00ffb7;
+    transition:.5s;
+}
+
+/* Step Indicator */
+
+.step-indicator{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:30px;
+}
+
+.circle-step{
+    width:45px;
+    height:45px;
+    border-radius:50%;
+    background:rgba(255,255,255,.2);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-weight:600;
+}
+
+.circle-step.active{
+    background:#00ffb7;
+    color:#111;
+}
+
+/* Form */
+
+.step{
+    display:none;
+}
+
+.step.active{
+    display:block;
+}
+
+.image-box{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.image-box img{
+    width:110px;
+    height:110px;
+    border-radius:50%;
+    object-fit:cover;
+    border:4px solid rgba(255,255,255,.3);
+    margin-bottom:15px;
+}
+
+.image-box input{
+    color:white;
+}
+
+.input-box{
+    margin-bottom:20px;
+}
+
+.input-box label{
+    display:block;
+    margin-bottom:8px;
+    font-weight:500;
+}
+
+.input-box input,
+.input-box select{
+    width:100%;
+    padding:15px;
+    border:none;
+    outline:none;
+    border-radius:15px;
+    background:rgba(255,255,255,.2);
+    color:black;
+    font-size:15px;
+}
+
+.input-box input::placeholder{
+    color:#eee;
+}
+
+.error{
+    color:#ffd5d5;
+    margin-top:6px;
+    font-size:14px;
+}
+
+.skills label,
+.terms label{
+    display:block;
+    margin-bottom:12px;
+    cursor:pointer;
+}
+
+.buttons{
+    display:flex;
+    gap:15px;
+    margin-top:30px;
+}
+
+.buttons button{
+    flex:1;
+    padding:15px;
+    border:none;
+    border-radius:15px;
+    font-size:16px;
+    font-weight:600;
+    cursor:pointer;
+    transition:.3s;
+}
+
+#prevBtn{
+    background:#555;
+    color:white;
+}
+
+#nextBtn{
+    background:#00c6ff;
+    color:white;
+}
+
+#submitBtn{
+    background:#00ffb7;
+    color:#111;
+}
+
+.buttons button:hover{
+    transform:translateY(-4px);
+}
+
+.success{
+    display:none;
+    text-align:center;
+    padding:25px;
+}
+
+.success i{
+    font-size:75px;
+    color:#00ffb7;
+    margin-bottom:15px;
+}
+
+.success h2{
+    margin-bottom:10px;
+}
+
+@media(max-width:550px){
+
+    .container{
+        padding:25px;
+    }
+
+    .buttons{
+        flex-direction:column;
+    }
+
+    h1{
+        font-size:28px;
+    }
+}
+</style>
+</head>
+<body>
+
+<div class="blob blob1"></div>
+<div class="blob blob2"></div>
+<div class="blob blob3"></div>
+
+<button id="themeBtn">
+<i class="fa-solid fa-moon"></i>
+</button>
+
+<div class="container">
+
+<h1>✨ Multi-Step Form Design and Validation </h1>
+<p class="subtitle">
+Create your account in a few easy steps
+</p>
+
+<div class="progress">
+<div class="progress-bar" id="progressBar"></div>
+</div>
+
+<div class="step-indicator">
+<div class="circle-step active">1</div>
+<div class="circle-step">2</div>
+<div class="circle-step">3</div>
+</div>
+
+<form id="form">
+
+<!-- STEP 1 -->
+<div class="step active">
+
+<div class="image-box">
+<img
+src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
+id="preview">
+
+<input
+type="file"
+id="image"
+accept="image/*">
+</div>
+
+<div class="input-box">
+<label>Full Name</label>
+<input
+type="text"
+id="name"
+placeholder="Enter your full name">
+<div class="error" id="nameError"></div>
+</div>
+
+<div class="input-box">
+<label>Email Address</label>
+<input
+type="email"
+id="email"
+placeholder="Enter your email">
+<div class="error" id="emailError"></div>
+</div>
+
+<div class="input-box">
+<label>Phone Number</label>
+<input
+type="tel"
+id="phone"
+placeholder="Enter phone number">
+<div class="error" id="phoneError"></div>
+</div>
+
+</div>
+
+<!-- STEP 2 -->
+<div class="step">
+
+<div class="input-box">
+<label>Username</label>
+<input
+type="text"
+id="username"
+placeholder="Create username">
+<div class="error" id="userError"></div>
+</div>
+
+<div class="input-box">
+<label>Password</label>
+
+<input
+type="password"
+id="password"
+placeholder="Create password">
+
+<div class="error" id="passError"></div>
+</div>
+
+<div class="input-box">
+<label>Confirm Password</label>
+
+<input
+type="password"
+id="confirm"
+placeholder="Confirm password">
+
+<div class="error" id="confirmError"></div>
+</div>
+
+</div>
+<!-- STEP 3 -->
+<div class="step">
+
+  <div class="input-box">
+    <label>Gender</label>
+    <select id="gender">
+      <option value="">Select Gender</option>
+      <option>Female</option>
+      <option>Male</option>
+      <option>Other</option>
+    </select>
+  </div>
+
+  <div class="input-box">
+    <label>Country</label>
+    <select id="country">
+      <option value="">Select Country</option>
+      <option>India</option>
+      <option>USA</option>
+      <option>UK</option>
+      <option>Canada</option>
+      <option>Australia</option>
+    </select>
+  </div>
+
+  <div class="input-box">
+    <label>Skills</label>
+
+    <div class="skills">
+
+      <label>
+        <input type="checkbox" id="htmlSkill">
+        HTML
+      </label>
+
+      <label>
+        <input type="checkbox" id="cssSkill">
+        CSS
+      </label>
+
+      <label>
+        <input type="checkbox" id="jsSkill">
+        JavaScript
+      </label>
+
+      <label>
+        <input type="checkbox" id="reactSkill">
+        React JS
+      </label>
+
+    </div>
+  </div>
+
+  <div class="terms">
+    <label>
+      <input
+        type="checkbox"
+        id="terms">
+
+      I agree to the Terms &
+      Conditions
+    </label>
+  </div>
+
+</div>
+
+<!-- Buttons -->
+<div class="buttons">
+
+  <button
+    type="button"
+    id="prevBtn"
+    style="display:none;">
+    ⬅ Previous
+  </button>
+
+  <button
+    type="button"
+    id="nextBtn">
+    Next ➡
+  </button>
+
+  <button
+    type="submit"
+    id="submitBtn"
+    style="display:none;">
+    Create Account 🚀
+  </button>
+
+</div>
+
+</form>
+
+<!-- Success Message -->
+<div class="success" id="success">
+
+  <i
+    class="fa-solid fa-circle-check">
+  </i>
+
+  <h2>
+    Registration Successful!
+  </h2>
+
+  <p>
+    Welcome to Smart Registration Portal 🚀
+  </p>
+
+</div>
+
+</div>
+<script>
+
+const steps = document.querySelectorAll(".step");
+const circles = document.querySelectorAll(".circle-step");
+
+const progressBar =
+document.getElementById("progressBar");
+
+const nextBtn =
+document.getElementById("nextBtn");
+
+const prevBtn =
+document.getElementById("prevBtn");
+
+const submitBtn =
+document.getElementById("submitBtn");
+
+const form =
+document.getElementById("form");
+
+const success =
+document.getElementById("success");
+
+let currentStep = 0;
+
+/* ------------------
+   MULTI STEP
+------------------- */
+
+function showStep(index){
+
+    steps.forEach(step =>
+        step.classList.remove("active")
+    );
+
+    circles.forEach(circle =>
+        circle.classList.remove("active")
+    );
+
+    steps[index].classList.add("active");
+    circles[index].classList.add("active");
+
+    progressBar.style.width =
+    ((index + 1) / steps.length) * 100 + "%";
+
+    prevBtn.style.display =
+    index === 0 ? "none" : "block";
+
+    nextBtn.style.display =
+    index === steps.length - 1
+    ? "none"
+    : "block";
+
+    submitBtn.style.display =
+    index === steps.length - 1
+    ? "block"
+    : "none";
+}
+
+showStep(currentStep);
+
+nextBtn.onclick = () => {
+
+    if(currentStep < steps.length - 1){
+        currentStep++;
+        showStep(currentStep);
+    }
+
+};
+nextBtn.onclick = () => {
+
+    let valid = true;
+
+    // STEP 1 VALIDATION
+    if(currentStep === 0){
+
+        nameError.innerHTML = "";
+        emailError.innerHTML = "";
+        phoneError.innerHTML = "";
+
+        const name =
+        document.getElementById("name")
+        .value.trim();
+
+        const email =
+        document.getElementById("email")
+        .value.trim();
+
+        const phone =
+        document.getElementById("phone")
+        .value.trim();
+
+        const emailPattern =
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if(name.length < 3){
+            nameError.innerHTML =
+            "Enter minimum 3 characters.";
+            valid = false;
+        }
+
+        if(!emailPattern.test(email)){
+            emailError.innerHTML =
+            "Enter a valid email.";
+            valid = false;
+        }
+
+        if(phone.length !== 10 ||
+            isNaN(phone)){
+
+            phoneError.innerHTML =
+            "Enter a valid 10-digit number.";
+            valid = false;
+        }
+    }
+
+    // STEP 2 VALIDATION
+    if(currentStep === 1){
+
+        userError.innerHTML = "";
+        passError.innerHTML = "";
+        confirmError.innerHTML = "";
+
+        const username =
+        document.getElementById("username")
+        .value.trim();
+
+        const confirm =
+        document.getElementById("confirm")
+        .value.trim();
+
+        if(username.length < 4){
+            userError.innerHTML =
+            "Username must be at least 4 characters.";
+            valid = false;
+        }
+
+        if(password.value.length < 6){
+            passError.innerHTML =
+            "Password must be at least 6 characters.";
+            valid = false;
+        }
+
+        if(password.value !== confirm){
+            confirmError.innerHTML =
+            "Passwords do not match.";
+            valid = false;
+        }
+    }
+
+    // NEXT STEP
+    if(valid &&
+       currentStep < steps.length - 1){
+
+        currentStep++;
+        showStep(currentStep);
+    }
+
+};
+
+prevBtn.onclick = () => {
+
+    if(currentStep > 0){
+        currentStep--;
+        showStep(currentStep);
+    }
+
+};
+
+
+/* ------------------
+   PROFILE PREVIEW
+------------------- */
+
+const image =
+document.getElementById("image");
+
+const preview =
+document.getElementById("preview");
+
+image.addEventListener("change", function(){
+
+    const file = this.files[0];
+
+    if(file){
+
+        const reader =
+        new FileReader();
+
+        reader.onload = function(e){
+            preview.src =
+            e.target.result;
+        };
+
+        reader.readAsDataURL(file);
+    }
+
+});
+
+
+/* ------------------
+   PASSWORD STRENGTH
+------------------- */
+
+const password =
+document.getElementById("password");
+
+const passError =
+document.getElementById("passError");
+
+password.addEventListener("input", () => {
+
+    let value =
+    password.value.length;
+
+    if(value < 6){
+
+        passError.innerHTML =
+        "Weak Password ❌";
+
+        passError.style.color =
+        "#ff6961";
+    }
+    else if(value < 10){
+
+        passError.innerHTML =
+        "Medium Password ⚡";
+
+        passError.style.color =
+        "#ffd166";
+    }
+    else{
+
+        passError.innerHTML =
+        "Strong Password 🔥";
+
+        passError.style.color =
+        "#00ffb7";
+    }
+
+});
+
+
+/* ------------------
+   DARK MODE
+------------------- */
+
+const themeBtn =
+document.getElementById("themeBtn");
+
+themeBtn.onclick = () => {
+
+    document.body.classList.toggle("dark");
+
+    if(document.body.classList.contains("dark")){
+
+        themeBtn.innerHTML =
+        '<i class="fa-solid fa-sun"></i>';
+
+        document.body.style.background =
+        "#0f172a";
+    }
+    else{
+
+        themeBtn.innerHTML =
+        '<i class="fa-solid fa-moon"></i>';
+
+        document.body.style.background =
+        "";
+    }
+
+};
+
+
+/* ------------------
+   FORM VALIDATION
+------------------- */
+
+form.addEventListener("submit", e => {
+
+    e.preventDefault();
+
+    document
+    .querySelectorAll(".error")
+    .forEach(el =>
+        el.innerHTML = ""
+    );
+
+
+    let valid = true;
+
+    const name =
+    document.getElementById("name")
+    .value.trim();
+
+    const email =
+    document.getElementById("email")
+    .value.trim();
+
+    const phone =
+    document.getElementById("phone")
+    .value.trim();
+
+    const username =
+    document.getElementById("username")
+    .value.trim();
+
+    const confirm =
+    document.getElementById("confirm")
+    .value.trim();
+
+    const gender =
+    document.getElementById("gender")
+    .value;
+
+    const country =
+    document.getElementById("country")
+    .value;
+
+    const terms =
+    document.getElementById("terms")
+    .checked;
+
+    const emailPattern =
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if(name.length < 3){
+        nameError.innerHTML =
+        "Enter minimum 3 characters.";
+        valid = false;
+    }
+
+    if(!emailPattern.test(email)){
+        emailError.innerHTML =
+        "Enter valid email.";
+        valid = false;
+    }
+
+    if(phone.length !== 10 ||
+        isNaN(phone)){
+
+        phoneError.innerHTML =
+        "Enter valid phone number.";
+        valid = false;
+    }
+
+    if(username.length < 4){
+        userError.innerHTML =
+        "Username must be at least 4 characters.";
+        valid = false;
+    }
+
+    if(password.value.length < 6){
+        valid = false;
+    }
+
+    if(password.value !== confirm){
+        confirmError.innerHTML =
+        "Passwords do not match.";
+        valid = false;
+    }
+
+    if(gender === ""){
+        alert("Please select gender.");
+        valid = false;
+    }
+
+    if(country === ""){
+        alert("Please select country.");
+        valid = false;
+    }
+
+    if(!terms){
+        alert(
+        "Please accept Terms & Conditions."
+        );
+        valid = false;
+    }
+
+    /* ------------------
+       SAVE DATA
+    ------------------- */
+
+    if(valid){
+
+        const user = {
+
+            name,
+            email,
+            phone,
+            username,
+            gender,
+            country
+
+        };
+
+        localStorage.setItem(
+            "userData",
+            JSON.stringify(user)
+        );
+
+        form.style.display = "none";
+        success.style.display = "block";
+
+        success.innerHTML = `
+        <i class="fa-solid fa-circle-check"></i>
+        <h2>Registration Successful!</h2>
+        <p>
+        Welcome ${name} 🚀
+        </p>
+        `;
+    }
+
+});
+
+</script>
